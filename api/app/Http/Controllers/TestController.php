@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
-    public function test(){
-        return 'Controller OK';
+    public function test(Request $request){
+        return $request->name;
     }
 }
