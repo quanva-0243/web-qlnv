@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { TestProvider } from './context/appContext'
 
 ReactDOM.render(
   <React.StrictMode>
-    <TestProvider>
+    <BrowserRouter>
       <App />
-    </TestProvider>
+    </BrowserRouter>
   </React.StrictMode>
 , document.getElementById('root'));
 

@@ -1,15 +1,21 @@
-import { useContext } from "react";
-import { TestContext } from "./context/appContext";
-
+import './App.css';
+import {Route, Routes} from 'react-router-dom'
+import {TokenAvailble, TokenUnavailble} from './api/authenticate'
+import { Sign } from './pages/Sign';
 
 function App() {
-  const test = useContext(TestContext);
 
   return (
-      <div style={{ padding: 20 }}>
-          <button onClick={test.changeValue}>Change</button>
-          <div>{test.value}</div>
-      </div>
+    <>
+      <Routes>
+        <Route element={<TokenAvailble/>} >
+          <Route path='/' element={<Sign/>} />
+        </Route>
+        <Route element={<TokenUnavailble/>} >
+          <Route path='/home-page' element={<>home</>} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

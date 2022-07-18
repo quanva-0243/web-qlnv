@@ -1,2 +1,10 @@
-GET http://127.0.0.1:8000/api/test-api
+POST http://127.0.0.1:8000/api/user/register
 Content-Type: application/json
+
+{
+    "name" : "Binhkio",
+    "password" : "12345678",
+    "email" : "binhkio@gmail.com",
+    "phone_number" : "0123456789",
+    "address" : "Tay Ho, Ha Noi"
+}
