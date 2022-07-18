@@ -4,7 +4,6 @@ use App\Http\Controllers\SignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\TestController;
 
 
 /*
@@ -26,4 +25,8 @@ Route::get('/test-api/{id}', function (Request $request) {
     return response();
 });
 
-Route::post('/user/register', [SignController::class, 'Register']);
+
+Route::prefix('user')->group( function () {
+    Route::post('/login', [SignController::class, 'Login']);
+    Route::post('/register', [SignController::class, 'Register']);
+});

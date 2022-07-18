@@ -21,6 +21,7 @@ class Users extends Migration
             $table->unsignedInteger('role');
             $table->string('phone_number');
             $table->string('address');
+            $table->string('token');
             $table->timestamps();
         });
 
