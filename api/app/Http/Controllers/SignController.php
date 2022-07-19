@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Users;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class SignController extends Controller
                 'message'   =>  'Validatie false'
             ], 401);
         }
+
         // Check user
         $user = DB::table('users')->where('email', $request['email']);
         if( !$user->exists() ){
@@ -37,6 +39,13 @@ class SignController extends Controller
             ], 401);
         }
 
+        // if(!Auth::attempt($request->only('email', 'password'))){
+        //     return response()->json([
+        //         'message'   =>  'Incorrect email or password'
+        //     ], 401);
+        // }
+        // $user = Auth::user();
+
         //  Check user completed
         //  Create token
         $token = Str::random(128);
@@ -45,7 +54,8 @@ class SignController extends Controller
         ]);
 
         return response()->json([
-            'message'   =>  'Login successfully'
+            'message'   =>  'Login successfully',
+            'token'     =>  $token
         ], 200);
         
     }
@@ -101,4 +111,5 @@ class SignController extends Controller
             'message'   =>  'Register successfully'
         ],200);
     }
+
 }

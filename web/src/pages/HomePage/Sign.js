@@ -1,15 +1,19 @@
-import { Button } from 'antd';
-import { Link, Outlet } from 'react-router-dom';
+import { Row, Space } from "antd"
+import { useContext } from "react";
+import { AppContext } from "../../context/appContext";
+
 
 export function Sign () {
 
+    const { curForm } = useContext(AppContext);
+
     return (
-        <div>
-            <div style={{marginLeft:'auto', marginRight:'auto', display:'block'}}>
-                <Link to={'/'}><Button>Sign in</Button></Link>
-                <Link to={'/register'}><Button>Sign up</Button></Link>
-            </div>
-            <Outlet/>
-        </div>
+        <Row type='flex' justify='center' align='middle' style={{ minHeight: '100vh' }}>
+            <Space size={5} direction="vertical" >
+                <Row type='flex' justify='center' align='middle'>
+                    {curForm}
+                </Row>
+            </Space>
+        </Row>
     );
 }

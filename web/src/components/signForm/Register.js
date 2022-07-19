@@ -1,83 +1,69 @@
-import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Typography } from 'antd';
+import React, { useState, useContext } from 'react';
+import { AppContext } from "../../context/appContext";
 import { RegisterCallApi } from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { Success } from '../Alert';
 
 export function Register () {
 
-    const navigate = useNavigate();
-    
-    const [form] = Form.useForm();
-    const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
+    const [form, setForm] = useState({
+        email: "",
+        name: "",
+        password: ""
+    });
 
-    useEffect(() => {
-        forceUpdate({});
-    }, []);
+    const { signForm, setCurForm } = useContext(AppContext);
 
-    const onFinish = async (values) => {
-        console.log('Finish:', values);
-        const response = await RegisterCallApi(values);
-        if(response === true){
-            navigate('/');
-        }else{
-            console.log('msg: ' + response);
+    const { Link } = Typography;
+
+    const handleRegister = () => {
+        const successed = RegisterCallApi(form);
+        if(successed){
+            setCurForm(signForm.login);
+            Success('Register successfully!');
         }
-    };
+    }
 
     return (
-        <Form form={form} name="horizontal_login" layout="inline" onFinish={onFinish}>
-        <Form.Item
-            name="name"
-            rules={[
-                {
-                    required: true,
-                    message: 'Please input your name!',
-                },
-            ]}
-            >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
-        </Form.Item>
-        <Form.Item
-            name="email"
-            rules={[
-                {
-                    required: true,
-                    message: 'Please input your email!',
-                },
-            ]}
-            >
-            <Input prefix={<MailOutlined className="site-form-item-icon" />} placeholder="Email" />
-        </Form.Item>
-        <Form.Item
-            name="password"
-            rules={[
-                {
-                required: true,
-                message: 'Please input your password!',
-            },
-        ]}
+        <Form
+            name='loginForm'
+            className='form'
         >
-            <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-            />
-        </Form.Item>
-        <Form.Item shouldUpdate>
-            {() => (
-                <Button
-                type="primary"
-                htmlType="submit"
-                disabled={
-                    !form.isFieldsTouched(true) ||
-                    !!form.getFieldsError().filter(({ errors }) => errors.length).length
-                }
-                >
-                Register
-            </Button>
-            )}
-        </Form.Item>
+        
+            <Form.Item
+                name='email'
+                rules={[
+                    { required: true, type: 'email', message: 'Please input your email' }
+                ]}
+            >
+                <Input prefix={<UserOutlined />} placeholder='Email' onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </Form.Item>
+
+            <Form.Item
+                name='name'
+                rules={[
+                    { required: true, message: 'Please input your name' }
+                ]}
+            >
+                <Input prefix={<UserOutlined />} placeholder='Username' onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            </Form.Item>
+
+            <Form.Item
+                name='password'
+                rules={[{ required: true, message: 'Please input your password' }]}
+            >
+                <Input.Password prefix={<LockOutlined />} placeholder='Password' onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            </Form.Item>
+            <Form.Item>
+                <Button className='btn' type='primary' onClick={handleRegister}>
+                    Register
+                </Button>
+            </Form.Item>
+
+            {'Already has account? '}
+            <Link onClick={()=>{setCurForm(signForm.login)}}>Login now!</Link>
+
         </Form>
     );
 }

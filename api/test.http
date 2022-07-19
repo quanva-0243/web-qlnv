@@ -16,3 +16,11 @@ Content-Type: application/json
     "email" : "binhkio@gmail.com",
     "password" : "12345678"
 }
+
+###
+GET http://127.0.0.1:8000/api/user/info
+Content-Type: application/json
+
+{
+    "token" : "ujURkesEYE83dM3rxUn4v0ZWg3wGPCO8syUqBJJOk3oaA7exbwuwF5PQxVjQVGO4YrQzcwNtud1LbeneJq7UDpwKXgykxuPyAEikU1WuZOnNCBBHTVe712zNJxRK2y28"
+}

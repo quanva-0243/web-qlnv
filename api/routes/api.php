@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,9 @@ Route::get('/test-api/{id}', function (Request $request) {
 Route::prefix('user')->group( function () {
     Route::post('/login', [SignController::class, 'Login']);
     Route::post('/register', [SignController::class, 'Register']);
+});
+
+Route::prefix('user')->group( function () {
+    Route::get('/info', [AuthController::class, 'Info']);
+    // Route::get('/logout', [SignController::class, 'Logout']);
 });

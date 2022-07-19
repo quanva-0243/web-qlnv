@@ -1,24 +1,31 @@
 import { useState, createContext } from "react";
+import { Login } from "../components/signForm/Login";
+import { Register } from "../components/signForm/Register";
 
-const TestContext = createContext();
+export const AppContext = createContext();
 
-function TestProvider ({children}) {
-    const [value, setValue] = useState(0);
-
-    const changeValue = () => {
-        setValue(value === 0 ? 1 : 0);
+export function AppContextProvider ({children}) {
+    
+    const signForm = {
+        login : <Login/>,
+        register : <Register/>,
     }
 
-    const test = {
-        value,
-        changeValue
+    const [curForm, setCurForm] = useState(signForm.login);
+
+    const user = {}
+
+    //  Global variables
+    const data = {
+        signForm,
+        curForm,
+        setCurForm,
+        user
     }
 
     return (
-        <TestProvider value={test}>
+        <AppContext.Provider value={data}>
             {children}
-        </TestProvider>
+        </AppContext.Provider>
     );
 }
-
-export { TestContext, TestProvider }

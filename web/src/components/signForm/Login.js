@@ -1,70 +1,52 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Form, Input, Typography } from 'antd';
+import React, { useState, useContext } from 'react';
+import { AppContext } from "../../context/appContext";
 import { LoginCallApi } from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
 
 export function Login () {
 
-    const navigate = useNavigate();
-    
-    const [form] = Form.useForm();
-    const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
+    const [form, setForm] = useState({
+        email: "",
+        password: ""
+    });
 
-    useEffect(() => {
-        forceUpdate({});
-    }, []);
+    const { signForm, setCurForm } = useContext(AppContext);
 
-    const onFinish = async (values) => {
-        console.log('Finish:', values);
-        const response = await LoginCallApi(values);
-        if(response === true){
-            navigate('/home-page');
-        }
-    };
+    const { Link } = Typography;
+
+    const handleLogin = async () => {
+        LoginCallApi(form);
+    }
 
     return (
-        <Form form={form} name="horizontal_login" layout="inline" onFinish={onFinish}>
-        <Form.Item
-            name="email"
-            rules={[
-                {
-                    required: true,
-                    message: 'Please input your email!',
-                },
-            ]}
-            >
-            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" />
-        </Form.Item>
-        <Form.Item
-            name="password"
-            rules={[
-                {
-                required: true,
-                message: 'Please input your password!',
-            },
-        ]}
+        <Form
+            name='loginForm'
+            className='form'
         >
-            <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-            />
-        </Form.Item>
-        <Form.Item shouldUpdate>
-            {() => (
-                <Button
-                type="primary"
-                htmlType="submit"
-                disabled={
-                    !form.isFieldsTouched(true) ||
-                    !!form.getFieldsError().filter(({ errors }) => errors.length).length
-                }
-                >
-                Log in
+            <Form.Item
+                name='email'
+                rules={[
+                    { required: true, type: 'email', message: 'Please input your email' }
+                ]}
+            >
+                <Input prefix={<UserOutlined />} placeholder='Email' onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            </Form.Item>
+
+            <Form.Item
+                name='password'
+                rules={[{ required: true, message: 'Please input your password' }]}
+            >
+                <Input.Password prefix={<LockOutlined />} placeholder='Password' onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            <Form.Item>
+
+            </Form.Item>
+                <Button className='btn' type='primary' onClick={handleLogin}>
+                    Log In
                 </Button>
-            )}
-        </Form.Item>
+            </Form.Item>
+            <Link onClick={()=>{setCurForm(signForm.register)}}>Register now!</Link>
+
         </Form>
     );
 }
