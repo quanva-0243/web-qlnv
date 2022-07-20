@@ -3,7 +3,6 @@ import { Button, Form, Input, Typography } from 'antd';
 import React, { useState, useContext } from 'react';
 import { AppContext } from "../../context/appContext";
 import { RegisterCallApi } from '../../api/axios';
-import { Success } from '../Alert';
 
 export function Register () {
 
@@ -18,11 +17,7 @@ export function Register () {
     const { Link } = Typography;
 
     const handleRegister = () => {
-        const successed = RegisterCallApi(form);
-        if(successed){
-            setCurForm(signForm.login);
-            Success('Register successfully!');
-        }
+        RegisterCallApi(form);
     }
 
     return (

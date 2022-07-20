@@ -1,44 +1,73 @@
 import axios from 'axios';
-import { Redirect, Error } from '../components/Alert';
+import { Error, Success, Redirect } from '../components/Alert';
 
-const defaultApi = 'http://127.0.0.1:8000/api';
-
+//  Config
+const baseURL = 'http://127.0.0.1:8000/api';
+(()=>{
+    const token = localStorage.getItem('token');
+    if(token)
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    else
+        delete axios.defaults.headers.common['Authorization'];
+})();
+//
 
 export const LoginCallApi = async (form) => {
     try{
-        const response = await axios.post(`${defaultApi}/user/login`, form );
-        console.log(response);
+        const response = await axios.post(`${baseURL}/user/login`, form );
         if(response.status===200){
-            localStorage.setItem('token', response.data.token);
-            Redirect();
-            return true;
-        }else{
-            Error(response.data.message);
+            if(response.data.success === true){
+                localStorage.setItem('token', response.data.token);
+                
+                Redirect();
+            }else{
+                Error(response.data.message);
+            }
         }
     }
-    catch(err){
-        console.log(err);
+    catch(error){
+        Error(error.message);
     }
 }
 
 export const RegisterCallApi = async (form) => {
     try{
-        const response = await axios.post(`${defaultApi}/user/register`, form );
-        console.log(response.data);
+        const response = await axios.post(`${baseURL}/user/register`, form );
         if(response.status===200){
-            return true;
+            if(response.data.success){
+                window.location.reload();
+                Success(response.data.message);
+            }
+            else
+                Error(response.data.message);
         }
     }
-    catch(err){
-        console.log(err);
+    catch(error){
+        Error(error.message);
     }
 }
 
-export const findUserByToken = async (token) => {
-    const userInfo = await axios.get(`${defaultApi}/user/info`, {token});
-    if(userInfo){
-        return userInfo;
-    }else{
-        return null;
+export const LogoutCallApi = async () => {
+    try{
+        const response = await axios.get(`${baseURL}/user/logout`);
+        if(response.status===200)
+        if(response.data.success){
+            localStorage.removeItem('token');
+            delete axios.defaults.headers.common['Authorization'];
+            window.location.reload();
+        }
+    }
+    catch(error){
+        Error(error);
+    }
+}
+
+export const GetUser = async () => {
+    try{
+        const response = await axios.get(`${baseURL}/user/info`);
+        if(response.data.success === true)
+            return response.data;
+    }catch(error){
+        return error.message
     }
 }

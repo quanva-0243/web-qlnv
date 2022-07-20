@@ -1,8 +1,4 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { findUserByToken } from './axios';
-import { AppContext } from "../context/appContext";
-import { useContext } from 'react';
-
 
 function TokenAvailble () {
     // Check token in local storage

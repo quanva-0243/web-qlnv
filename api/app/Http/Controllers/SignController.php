@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Users;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,52 +21,57 @@ class SignController extends Controller
         ]);
         if($validation->fails()){
             return response()->json([
+                'success' => false,
                 'message'   =>  'Validatie false'
-            ], 401);
+            ], 200);
         }
 
         // Check user
-        $user = DB::table('users')->where('email', $request['email']);
-        if( !$user->exists() ){
-            return response()->json([
-                'message'   =>  'Email not availble'
-            ], 401);
-        }
-
-        if( !Hash::check($request['password'], $user->value('password')) ){
-            return response()->json([
-                'message'   =>  'Password incorrect'
-            ], 401);
-        }
-
-        // if(!Auth::attempt($request->only('email', 'password'))){
+        // $user = DB::table('user')->where('email', $request['email']);
+        // if( !$user->exists() ){
         //     return response()->json([
-        //         'message'   =>  'Incorrect email or password'
-        //     ], 401);
+            // 'success' => false,
+        //         'message'   =>  'Email not availble'
+        //     ], 200);
         // }
-        // $user = Auth::user();
+
+        // if( !Hash::check($request['password'], $user->value('password')) ){
+        //     return response()->json([
+            // 'success' => false,
+        //         'message'   =>  'Password incorrect'
+        //     ], 200);
+        // }
+
+        if(!Auth::attempt($request->only('email', 'password'))){
+            return response()->json([
+                'success' => false,
+                'message'   =>  'Incorrect email or password'
+            ], 200);
+        }
+
+        /** @var \App\Models\User  */
+        $user = Auth::user();
+        $token = $user->createToken('token')->plainTextToken;
 
         //  Check user completed
         //  Create token
-        $token = Str::random(128);
-        $user->update([
-            'token' =>  $token
-        ]);
 
         return response()->json([
+            'success'   =>  true,
             'message'   =>  'Login successfully',
-            'token'     =>  $token
+            'token'     =>  $token,
+            'user'      =>  $user
         ], 200);
         
     }
 
     //  LOGOUT
     public function Logout (Request $request) {
-        $token = $request['token'];
-        $user = DB::table('users')->where('token', $token);
-        $user->update([
-            'token' =>  null
-        ]);
+        $request->user()->tokens()->delete();
+        return response()->json([
+            'success' => true,
+            'message'   =>  'Logout successfully',
+        ], 200);
     }
 
     //  REGISTER
@@ -80,36 +85,46 @@ class SignController extends Controller
         ]);
         if($validation->fails()){
             return response()->json([
+                'success' => false,
                 'message'   =>  'Validatie false'
-            ],401);
+            ],200);
         }
 
         // Check email exist
         $emailExist = DB::table('users')->where('email', $request['email'])->exists();
         if($emailExist){
             return response()->json([
+                'success' => false,
                 'message'   =>  'Email already in used'
-            ],401);
+            ],200);
         }
         
 
         // Register
-        $hashedPassword = Hash::make($request['password']);
-        $token = Str::random(128);
-        $newUser = new Users();
+        $newUser = new User();
         //  Fillable
         $newUser->name = $request['name'];
         $newUser->email = $request['email'];
-        $newUser->password = $hashedPassword;
+        $newUser->password = Hash::make($request['password']);
         $newUser->phone_number = '';
         $newUser->address = '';
         //  Autofill
-        $newUser->role = 0;
-        $newUser->token = $token;
+        $newUser->role_id = 1;     //  1: staff     2: admin
         $newUser->save();
         return response()->json([
+            'success' => true,
             'message'   =>  'Register successfully'
         ],200);
+    }
+
+    public function Info (Request $request) {
+        // $user = Auth::user();
+        $user = $request->user();
+        return response()->json([
+            'success' => true,
+            'message' => 'Get user successed',
+            'user' => $user
+        ]);
     }
 
 }

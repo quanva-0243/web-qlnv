@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +31,8 @@ Route::prefix('user')->group( function () {
     Route::post('/register', [SignController::class, 'Register']);
 });
 
-Route::prefix('user')->group( function () {
-    Route::get('/info', [AuthController::class, 'Info']);
-    // Route::get('/logout', [SignController::class, 'Logout']);
+// middleware(['auth:sanctum'])->
+Route::middleware(['auth:sanctum'])->prefix('user')->group( function () {
+    Route::get('/info', [SignController::class, 'Info']);
+    Route::get('/logout', [SignController::class, 'Logout']);
 });

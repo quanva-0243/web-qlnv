@@ -1,11 +1,10 @@
 import { Button, Row } from "antd";
-
+import { LogoutCallApi } from '../../api/axios';
 
 export function Navbar () {
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        
+        LogoutCallApi();
     }
 
     return (

@@ -5,7 +5,7 @@ import { Register } from "../components/signForm/Register";
 export const AppContext = createContext();
 
 export function AppContextProvider ({children}) {
-    
+
     const signForm = {
         login : <Login/>,
         register : <Register/>,
@@ -13,14 +13,15 @@ export function AppContextProvider ({children}) {
 
     const [curForm, setCurForm] = useState(signForm.login);
 
-    const user = {}
+    const [user, setUser] = useState({});
 
     //  Global variables
     const data = {
         signForm,
         curForm,
         setCurForm,
-        user
+        user,
+        setUser
     }
 
     return (
